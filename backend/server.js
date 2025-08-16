@@ -23,22 +23,24 @@ const CDP_CONFIG = {
 };
 
 // Función para generar JWT usando el SDK oficial de CDP
-async function generateCDPJWT(walletAddress) {
+async function generateCDPJWT(walletAddress, requestMethod = "GET", requestPath = "/onramp/v1/buy/options") {
   try {
     console.log('🔐 Generando JWT usando SDK oficial de CDP...');
     console.log('📋 Configuración:', {
       appId: CDP_CONFIG.appId,
       apiKey: CDP_CONFIG.apiKey,
-      walletAddress: walletAddress
+      walletAddress: walletAddress,
+      requestMethod: requestMethod,
+      requestPath: requestPath
     });
 
     // Usar el SDK oficial de CDP para generar JWT
     const jwt = await generateJwt({
       apiKeyId: CDP_CONFIG.apiKey,
       apiKeySecret: CDP_CONFIG.privateKey,
-      requestMethod: "GET",
+      requestMethod: requestMethod,
       requestHost: "api.developer.coinbase.com",
-      requestPath: "/onramp/v1/buy/options",
+      requestPath: requestPath,
       expiresIn: 120 // 2 minutos según CDP docs
     });
 
@@ -96,8 +98,8 @@ app.post('/api/generate-session-token', async (req, res) => {
 
     console.log('🚀 Generando session token para:', { walletAddress, amount });
     
-    // Primero generar JWT
-    const jwtToken = await generateCDPJWT(walletAddress);
+    // Primero generar JWT con POST y /onramp/v1/token
+    const jwtToken = await generateCDPJWT(walletAddress, "POST", "/onramp/v1/token");
     
     // Preparar payload para CDP API (usando solo addresses según nueva API)
     const payload = {
@@ -234,15 +236,15 @@ app.post('/api/generate-buy-quote', async (req, res) => {
 
     console.log('🚀 Generando Buy Quote para:', { walletAddress, amount, country, subdivision });
     
-    // Primero generar JWT
-    const jwtToken = await generateCDPJWT(walletAddress);
+    // Generar JWT fresco con POST y /onramp/v1/buy/quote
+    const jwtToken = await generateCDPJWT(walletAddress, "POST", "/onramp/v1/buy/quote");
     
     // Preparar payload para Buy Quote API según CDP docs
     const requestBody = {
       country: country,
       destinationAddress: walletAddress,
       paymentAmount: amount.toString(),
-      paymentCurrency: "COP",
+      paymentCurrency: "COP",  // ✅ Usar COP como fiat currency
       paymentMethod: "UNSPECIFIED",
       purchaseCurrency: "CELO",
       purchaseNetwork: "celo",
