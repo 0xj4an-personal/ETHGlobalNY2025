@@ -1,0 +1,149 @@
+.api-tester {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  border: 2px solid #17a2b8;
+}
+
+.api-tester h3 {
+  color: #17a2b8;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.api-tester p {
+  color: #666;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.test-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  padding: 10px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #17a2b8;
+}
+
+.test-button {
+  padding: 12px 20px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.test-button:hover:not(:disabled) {
+  background: #138496;
+  transform: translateY(-2px);
+}
+
+.test-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.test-results {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #17a2b8;
+}
+
+.test-results h4 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.error-result {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.success-result {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.result-item strong {
+  color: #333;
+}
+
+.token, .url {
+  font-family: monospace;
+  background: #e9ecef;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.payload {
+  background: #e9ecef;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.test-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(23, 162, 184, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #17a2b8;
+}
+
+.test-info p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .api-tester {
+    padding: 20px;
+  }
+  
+  .test-inputs {
+    gap: 12px;
+  }
+}

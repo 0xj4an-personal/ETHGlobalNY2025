@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Test</title>
+</head>
+<body>
+    <h1>🧪 Test de Conexión Backend</h1>
+    
+    <button onclick="testHealth()">Test Health Check</button>
+    <button onclick="testJWT()">Test JWT Generation</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const BACKEND_URL = 'http://localhost:3002';
+        
+        async function testHealth() {
+            try {
+                console.log('🔍 Probando health check...');
+                const response = await fetch(`${BACKEND_URL}/api/health`);
+                const data = await response.json();
+                
+                console.log('✅ Health check exitoso:', data);
+                document.getElementById('results').innerHTML = `
+                    <h3>✅ Health Check Exitoso</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('❌ Error en health check:', error);
+                document.getElementById('results').innerHTML = `
+                    <h3>❌ Error en Health Check</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        async function testJWT() {
+            try {
+                console.log('🔍 Probando generación de JWT...');
+                const response = await fetch(`${BACKEND_URL}/api/generate-jwt`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        walletAddress: '0x1234567890123456789012345678901234567890'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('✅ JWT generado exitosamente:', data);
+                
+                document.getElementById('results').innerHTML = `
+                    <h3>✅ JWT Generado Exitosamente</h3>
+                    <p><strong>JWT:</strong> ${data.jwt.substring(0, 50)}...</p>
+                    <p><strong>Expira en:</strong> ${data.expiresIn}</p>
+                    <p><strong>Wallet:</strong> ${data.walletAddress}</p>
+                `;
+            } catch (error) {
+                console.error('❌ Error generando JWT:', error);
+                document.getElementById('results').innerHTML = `
+                    <h3>❌ Error Generando JWT</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

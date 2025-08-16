@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Múltiples URLs</title>
+</head>
+<body>
+    <h1>🧪 Test Múltiples URLs de Backend</h1>
+    
+    <button onclick="testAll()">Test Todas las URLs</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const urls = [
+            'http://localhost:3002/api/health',
+            'http://127.0.0.1:3002/api/health',
+            'http://[::1]:3002/api/health'
+        ];
+        
+        async function testAll() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>🔄 Probando todas las URLs...</p>';
+            
+            const results = [];
+            
+            for (const url of urls) {
+                try {
+                    console.log(`🔍 Probando: ${url}`);
+                    
+                    const startTime = Date.now();
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const endTime = Date.now();
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`✅ Éxito: ${url}`, data);
+                        
+                        results.push({
+                            url: url,
+                            status: '✅ Éxito',
+                            time: `${endTime - startTime}ms`,
+                            data: data
+                        });
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                } catch (error) {
+                    console.error(`❌ Error en ${url}:`, error);
+                    
+                    results.push({
+                        url: url,
+                        status: '❌ Error',
+                        error: error.message,
+                        type: error.name
+                    });
+                }
+                
+                // Pequeña pausa entre requests
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // Mostrar resultados
+            displayResults(results);
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = '<h3>📊 Resultados de las Pruebas:</h3>';
+            
+            results.forEach(result => {
+                if (result.status === '✅ Éxito') {
+                    html += `
+                        <div style="background: #d4edda; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                            <h4>${result.status} - ${result.url}</h4>
+                            <p><strong>Tiempo:</strong> ${result.time}</p>
+                            <p><strong>Status:</strong> ${result.data.status}</p>
+                            <p><strong>Service:</strong> ${result.data.service}</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div style="background: #f8d7da; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                            <h4>${result.status} - ${result.url}</h4>
+                            <p><strong>Error:</strong> ${result.error}</p>
+                            <p><strong>Tipo:</strong> ${result.type}</p>
+                        </div>
+                    `;
+                }
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Test individual
+        async function testSingle(url) {
+            try {
+                console.log(`🔍 Probando URL individual: ${url}`);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Éxito:', data);
+                    alert(`✅ Éxito: ${url}\nStatus: ${data.status}`);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+    </script>
+    
+    <h3>Test Individual:</h3>
+    <button onclick="testSingle('http://localhost:3002/api/health')">Test localhost</button>
+    <button onclick="testSingle('http://127.0.0.1:3002/api/health')">Test 127.0.0.1</button>
+</body>
+</html>
