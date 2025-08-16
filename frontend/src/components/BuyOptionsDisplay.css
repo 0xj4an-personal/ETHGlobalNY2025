@@ -1,0 +1,291 @@
+.buy-options-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.buy-options-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buy-options-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.refresh-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.buy-options-content {
+  padding: 25px;
+}
+
+.country-info {
+  background: rgba(102, 126, 234, 0.1);
+  border-left: 4px solid #667eea;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 1.1rem;
+}
+
+.flag {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
+.section h4 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.currencies-grid {
+  display: grid;
+  gap: 15px;
+}
+
+.currency-item {
+  background: #f8f9fa;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.currency-item:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.currency-item.purchase {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e8f4fd 100%);
+  border-color: #28a745;
+}
+
+.currency-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.currency-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.currency-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.currency-symbol {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.currency-name {
+  color: #666;
+  font-size: 1rem;
+}
+
+.networks-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.networks-info h5 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.network-item {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.network-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.network-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.network-chain {
+  background: #667eea;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.network-details {
+  font-size: 14px;
+  color: #666;
+}
+
+.contract-address {
+  font-family: monospace;
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 4px;
+  display: block;
+  word-break: break-all;
+}
+
+.expand-btn {
+  width: 100%;
+  background: #f8f9fa;
+  border: 2px solid #e1e5e9;
+  color: #333;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin: 20px 0;
+}
+
+.expand-btn:hover {
+  background: #e9ecef;
+  border-color: #667eea;
+}
+
+.api-info {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.api-info summary {
+  cursor: pointer;
+  color: #667eea;
+  font-weight: 600;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.api-info summary:hover {
+  background: #e9ecef;
+}
+
+.api-details {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.api-details p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.no-payment-methods {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.no-purchase-currencies {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .buy-options-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .currency-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .network-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}

@@ -1,6 +1,8 @@
 // CDP Onramp Service
 // Basado en la documentación: https://docs.cdp.coinbase.com/onramp-&-offramp/onramp-apis/onramp-overview
 
+import ensService from './ensService.js';
+
 const CDP_API_BASE = 'https://api.coinbase.com/v2';
 
 class CDPService {
@@ -51,14 +53,19 @@ class CDPService {
   }
 
   // Generar sessionToken con dirección de wallet específica
-  async generateSessionTokenWithAddress(walletAddress) {
+  async generateSessionTokenWithAddress(walletAddress, amount) {
     try {
-      console.log('🔑 Generando session token para wallet:', walletAddress);
-      console.log('📋 Configuración:', {
-        appId: this.appId,
-        apiKey: this.apiKey,
-        walletAddress: walletAddress
-      });
+      console.log('🔑 Generando session token para wallet:', walletAddress, 'amount:', amount);
+      
+      // Resolver ENS si es necesario
+      let resolvedAddress = walletAddress;
+      try {
+        resolvedAddress = await ensService.resolveAndValidateAddress(walletAddress, 'celo');
+        console.log('✅ Dirección resuelta y validada:', resolvedAddress);
+      } catch (ensError) {
+        console.warn('⚠️ Error resolviendo ENS, usando dirección original:', ensError.message);
+        // Continuar con la dirección original si ENS falla
+      }
       
       // Llamar al backend para generar session token completo
       const response = await fetch('http://localhost:3002/api/generate-session-token', {
@@ -67,8 +74,8 @@ class CDPService {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          walletAddress: walletAddress,
-          amount: 100000 // Placeholder amount
+          walletAddress: resolvedAddress,
+          amount: amount
         })
       });
       
@@ -85,12 +92,7 @@ class CDPService {
       return data.sessionToken;
     } catch (error) {
       console.error('❌ Error completo generando session token:', error);
-      console.error('❌ Stack trace:', error.stack);
-      
-      // Fallback: usar token de ejemplo si el backend falla
-      console.warn('⚠️ Fallback a token de ejemplo debido a error en backend');
-      const exampleToken = 'ZWJlNDgwYmItNjBkMi00ZmFiLWIxYTQtMTM3MGI2YjJiNjFh';
-      return exampleToken;
+      throw error; // No más fallback - queremos ver errores reales
     }
   }
 
@@ -122,11 +124,7 @@ class CDPService {
       return data.jwt;
     } catch (error) {
       console.error('❌ Error generando JWT desde backend:', error);
-      
-      // Fallback: usar token de ejemplo si el backend falla
-      console.warn('⚠️ Fallback a token de ejemplo debido a error en backend');
-      const exampleToken = 'ZWJlNDgwYmItNjBkMi00ZmFiLWIxYTQtMTM3MGI2YjJiNjFh';
-      return exampleToken;
+      throw error; // No más fallback - queremos ver errores reales
     }
   }
 
@@ -267,6 +265,119 @@ class CDPService {
     } catch (error) {
       console.error('Error getting quote:', error);
       throw new Error('No se pudo obtener el quote');
+    }
+  }
+
+  // Generar URL de onramp con session token
+  async generateOnrampURL(walletAddress, amount) {
+    try {
+      console.log('🌐 Generando URL de onramp para:', walletAddress, amount);
+      
+      // Resolver ENS si es necesario
+      let resolvedAddress = walletAddress;
+      try {
+        resolvedAddress = await ensService.resolveAndValidateAddress(walletAddress, 'celo');
+        console.log('✅ Dirección resuelta y validada para onramp:', resolvedAddress);
+      } catch (ensError) {
+        console.warn('⚠️ Error resolviendo ENS para onramp, usando dirección original:', ensError.message);
+        // Continuar con la dirección original si ENS falla
+      }
+      
+      // Generar session token primero
+      const sessionToken = await this.generateSessionTokenWithAddress(walletAddress, amount);
+      
+      // Configuración del onramp
+      const onrampConfig = {
+        appId: this.appId,
+        sessionToken: sessionToken,
+        walletAddresses: [
+          {
+            address: resolvedAddress,
+            blockchains: ["celo"],
+            assets: ["CELO"]
+          }
+        ]
+      };
+      
+      console.log('📋 Configuración onramp:', onrampConfig);
+      
+      // Generar URL de onramp
+      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&sessionToken=${sessionToken}`;
+      
+      console.log('✅ URL de onramp generada:', onrampURL);
+      
+      return {
+        url: onrampURL,
+        config: onrampConfig
+      };
+    } catch (error) {
+      console.error('❌ Error generando URL de onramp:', error);
+      throw error;
+    }
+  }
+
+  // Nuevo método: Generar Buy Quote usando backend
+  async generateBuyQuote(walletAddress, amount) {
+    try {
+      console.log('💰 Generando Buy Quote para:', walletAddress, amount);
+      
+      // Resolver ENS si es necesario
+      let resolvedAddress = walletAddress;
+      try {
+        resolvedAddress = await ensService.resolveAndValidateAddress(walletAddress, 'celo');
+        console.log('✅ Dirección resuelta y validada para Buy Quote:', resolvedAddress);
+      } catch (ensError) {
+        console.warn('⚠️ Error resolviendo ENS para Buy Quote, usando dirección original:', ensError.message);
+        // Continuar con la dirección original si ENS falla
+      }
+      
+      const response = await fetch('http://localhost:3002/api/generate-buy-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          walletAddress: resolvedAddress,
+          amount: amount
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Error del backend Buy Quote:', response.status, errorText);
+        throw new Error(`Backend Buy Quote error: ${response.status} - ${errorText}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Buy Quote generado exitosamente:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('❌ Error generando Buy Quote:', error);
+      throw error;
+    }
+  }
+
+  // Nuevo método: Obtener Buy Options para Colombia y Celo
+  async getBuyOptions(country = 'CO', networks = 'celo') {
+    try {
+      console.log('🔍 Obteniendo Buy Options para:', { country, networks });
+      
+      const response = await fetch(`http://localhost:3002/api/buy-options?country=${country}&networks=${networks}`);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Error del backend Buy Options:', response.status, errorText);
+        throw new Error(`Backend Buy Options error: ${response.status} - ${errorText}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Buy Options obtenidos exitosamente:', data);
+      
+      return data;
+    } catch (error) {
+      console.error('❌ Error obteniendo Buy Options:', error);
+      throw error;
     }
   }
 }

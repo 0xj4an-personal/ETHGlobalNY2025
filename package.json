@@ -12,7 +12,15 @@
     "backend": "cd backend && npm run dev",
     "backend:start": "cd backend && npm start"
   },
-  "keywords": ["celo", "onramp", "cdp", "defi"],
+  "keywords": [
+    "celo",
+    "onramp",
+    "cdp",
+    "defi"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@coinbase/cdp-sdk": "^1.35.0"
+  }
 }

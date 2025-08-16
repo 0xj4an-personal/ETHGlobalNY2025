@@ -51,6 +51,16 @@ body {
   color: #856404;
 }
 
+.testing-notice.success {
+  background: rgba(40, 167, 69, 0.2);
+  border-color: #28a745;
+  color: #155724;
+}
+
+.testing-notice.success strong {
+  color: #155724;
+}
+
 .app-main {
   max-width: 600px;
   margin: 0 auto;
