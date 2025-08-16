@@ -18,7 +18,8 @@ class CDPService {
       // Flujo: COP → Tarjeta → Celo → Uniswap → cCOP
       // Usar COP directamente en la URL de Coinbase
       
-      // Generar URL de onramp directamente sin session token
+      // Generar URL de onramp directamente sin sessionToken
+      // Buy Options funciona sin sessionToken, así que usamos solo parámetros básicos
       const baseURL = 'https://pay.coinbase.com/buy/select-asset';
       const params = new URLSearchParams({
         appId: this.appId,
@@ -26,13 +27,15 @@ class CDPService {
         currency: 'COP',  // ✅ Usar COP directamente
         destinationAddress: walletAddress,
         purchaseCurrency: 'CELO',
-        purchaseNetwork: 'celo'
+        purchaseNetwork: 'celo',
+        country: 'CO'  // ✅ Especificar país
       });
 
       const onrampURL = `${baseURL}?${params.toString()}`;
       
       console.log('Generated Onramp URL:', onrampURL);
       console.log('Flujo: Usuario compra Celo con COP, luego swap automático a cCOP');
+      console.log('Nota: URL generada sin sessionToken (Buy Options funciona sin él)');
       
       return {
         url: onrampURL,
@@ -40,7 +43,8 @@ class CDPService {
         flow: 'COP → Tarjeta → Celo → Uniswap → cCOP',
         amountCOP: amountCOP,
         currency: 'COP',
-        method: 'Direct URL Generation'
+        method: 'Direct URL Generation (Buy Options Only)',
+        note: 'No sessionToken requerido - Buy Options funciona sin él'
       };
     } catch (error) {
       console.error('Error generating onramp URL:', error);
@@ -279,19 +283,22 @@ class CDPService {
         // Continuar con la dirección original si ENS falla
       }
       
-      // Generar URL de onramp directamente usando Buy Options (que funciona)
-      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo`;
+      // Generar URL de onramp directamente usando solo Buy Options (que funciona)
+      // No necesitamos sessionToken porque Buy Options funciona sin él
+      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO`;
       
-      console.log('✅ URL de onramp generada usando Buy Options:', onrampURL);
+      console.log('✅ URL de onramp generada usando solo Buy Options:', onrampURL);
       
       return {
         url: onrampURL,
-        method: 'Direct URL Generation',
+        method: 'Direct URL Generation (Buy Options Only)',
         walletAddress: resolvedAddress,
         amount: amount,
         currency: 'COP',
         purchaseCurrency: 'CELO',
-        network: 'celo'
+        network: 'celo',
+        country: 'CO',
+        note: 'URL generada directamente sin sessionToken (Buy Options funciona)'
       };
     } catch (error) {
       console.error('❌ Error generando URL de onramp:', error);
