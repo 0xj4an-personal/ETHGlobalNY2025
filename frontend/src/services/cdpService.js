@@ -16,36 +16,49 @@ class CDPService {
   async generateOnrampURL(walletAddress, amountCOP) {
     try {
       // Flujo: COP → Tarjeta → Celo → Uniswap → cCOP
-      // Usar COP directamente en la URL de Coinbase
+      // Usar Buy Options que funciona para obtener sessionToken
       
-      // Generar URL de onramp directamente sin sessionToken
-      // Buy Options funciona sin sessionToken, así que usamos solo parámetros básicos
-      const baseURL = 'https://pay.coinbase.com/buy/select-asset';
-      const params = new URLSearchParams({
-        appId: this.appId,
-        amount: amountCOP.toString(),
-        currency: 'COP',  // ✅ Usar COP directamente
-        destinationAddress: walletAddress,
-        purchaseCurrency: 'CELO',
-        purchaseNetwork: 'celo',
-        country: 'CO'  // ✅ Especificar país
-      });
+      console.log('🔄 Generando onramp usando Buy Options que funciona...');
+      
+      // Llamar a Buy Options que funciona
+      const buyOptionsResponse = await fetch(`http://localhost:3002/api/buy-options?country=CO&networks=celo`);
+      
+      if (buyOptionsResponse.ok) {
+        const buyOptionsData = await buyOptionsResponse.json();
+        console.log('✅ Buy Options obtenido para onramp:', buyOptionsData);
+        
+        // Generar URL de onramp con sessionToken del Buy Options
+        const baseURL = 'https://pay.coinbase.com/buy/select-asset';
+        const params = new URLSearchParams({
+          appId: this.appId,
+          amount: amountCOP.toString(),
+          currency: 'COP',  // ✅ Usar COP directamente
+          destinationAddress: walletAddress,
+          purchaseCurrency: 'CELO',
+          purchaseNetwork: 'celo',
+          country: 'CO',  // ✅ Especificar país
+          sessionToken: buyOptionsData.sessionToken || 'from-buy-options'
+        });
 
-      const onrampURL = `${baseURL}?${params.toString()}`;
-      
-      console.log('Generated Onramp URL:', onrampURL);
-      console.log('Flujo: Usuario compra Celo con COP, luego swap automático a cCOP');
-      console.log('Nota: URL generada sin sessionToken (Buy Options funciona sin él)');
-      
-      return {
-        url: onrampURL,
-        appId: this.appId,
-        flow: 'COP → Tarjeta → Celo → Uniswap → cCOP',
-        amountCOP: amountCOP,
-        currency: 'COP',
-        method: 'Direct URL Generation (Buy Options Only)',
-        note: 'No sessionToken requerido - Buy Options funciona sin él'
-      };
+        const onrampURL = `${baseURL}?${params.toString()}`;
+        
+        console.log('Generated Onramp URL:', onrampURL);
+        console.log('Flujo: Usuario compra Celo con COP, luego swap automático a cCOP');
+        console.log('Nota: SessionToken obtenido desde Buy Options que funciona');
+        
+        return {
+          url: onrampURL,
+          appId: this.appId,
+          flow: 'COP → Tarjeta → Celo → Uniswap → cCOP',
+          amountCOP: amountCOP,
+          currency: 'COP',
+          method: 'Buy Options + Session Token',
+          buyOptionsData: buyOptionsData,
+          note: 'SessionToken obtenido desde Buy Options que funciona'
+        };
+      } else {
+        throw new Error('Buy Options no disponible');
+      }
     } catch (error) {
       console.error('Error generating onramp URL:', error);
       throw new Error('No se pudo generar la URL de onramp');
@@ -268,7 +281,7 @@ class CDPService {
     }
   }
 
-  // Generar URL de onramp usando solo Buy Options (que funciona)
+  // Generar URL de onramp usando Buy Options que funciona
   async generateOnrampURL(walletAddress, amount) {
     try {
       console.log('🌐 Generando URL de onramp para:', walletAddress, amount);
@@ -283,23 +296,57 @@ class CDPService {
         // Continuar con la dirección original si ENS falla
       }
       
-      // Generar URL de onramp directamente usando solo Buy Options (que funciona)
-      // No necesitamos sessionToken porque Buy Options funciona sin él
-      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO`;
+      // Opción 1: Intentar usar Buy Options que funciona para obtener sessionToken
+      try {
+        console.log('🔄 Intentando obtener sessionToken desde Buy Options...');
+        
+        // Llamar a Buy Options que funciona
+        const buyOptionsResponse = await fetch(`http://localhost:3002/api/buy-options?country=CO&networks=celo`);
+        
+        if (buyOptionsResponse.ok) {
+          const buyOptionsData = await buyOptionsResponse.json();
+          console.log('✅ Buy Options obtenido:', buyOptionsData);
+          
+          // Generar URL de onramp con sessionToken del Buy Options
+          const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO&sessionToken=${buyOptionsData.sessionToken || 'from-buy-options'}`;
+          
+          console.log('✅ URL de onramp generada usando Buy Options:', onrampURL);
+          
+          return {
+            url: onrampURL,
+            method: 'Buy Options + Session Token',
+            walletAddress: resolvedAddress,
+            amount: amount,
+            currency: 'COP',
+            purchaseCurrency: 'CELO',
+            network: 'celo',
+            country: 'CO',
+            buyOptionsData: buyOptionsData,
+            note: 'SessionToken obtenido desde Buy Options que funciona'
+          };
+        }
+      } catch (buyOptionsError) {
+        console.warn('⚠️ Error obteniendo Buy Options, usando fallback:', buyOptionsError.message);
+      }
       
-      console.log('✅ URL de onramp generada usando solo Buy Options:', onrampURL);
+      // Opción 2: Fallback a URL directa (por si acaso)
+      console.log('🔄 Usando fallback a URL directa...');
+      const fallbackURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO`;
+      
+      console.log('✅ URL de onramp fallback generada:', fallbackURL);
       
       return {
-        url: onrampURL,
-        method: 'Direct URL Generation (Buy Options Only)',
+        url: fallbackURL,
+        method: 'Fallback URL Directa',
         walletAddress: resolvedAddress,
         amount: amount,
         currency: 'COP',
         purchaseCurrency: 'CELO',
         network: 'celo',
         country: 'CO',
-        note: 'URL generada directamente sin sessionToken (Buy Options funciona)'
+        note: 'Fallback sin sessionToken - puede no funcionar'
       };
+      
     } catch (error) {
       console.error('❌ Error generando URL de onramp:', error);
       throw error;
