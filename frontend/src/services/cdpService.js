@@ -16,35 +16,33 @@ class CDPService {
   async generateOnrampURL(walletAddress, amountCOP) {
     try {
       // Flujo: COP → Tarjeta → Celo → Uniswap → cCOP
-      // Convertir COP a USD para el monto
-      const usdPriceCOP = 4000; // 1 USD = 4000 COP
-      const amountUSD = amountCOP / usdPriceCOP;
+      // Usar COP directamente en la URL de Coinbase
       
       // Generar sessionToken con la dirección de wallet real
       const sessionToken = await this.generateSessionTokenWithAddress(walletAddress);
       
-      // Construir URL de onramp con parámetros mínimos y funcionales
+      // Construir URL de onramp con COP directamente
       const baseURL = 'https://pay.coinbase.com/buy/select-asset';
       const params = new URLSearchParams({
         appId: this.appId,
         sessionToken: sessionToken,
         defaultExperience: 'buy',
-        amount: amountUSD.toFixed(2),
-        currency: 'USD'
+        amount: amountCOP.toString(),
+        currency: 'COP'  // ✅ Usar COP directamente
       });
 
       const onrampURL = `${baseURL}?${params.toString()}`;
       
       console.log('Generated Onramp URL:', onrampURL);
-      console.log('Flujo: Usuario compra Celo con tarjeta, luego swap automático a cCOP');
+      console.log('Flujo: Usuario compra Celo con COP, luego swap automático a cCOP');
       
       return {
         url: onrampURL,
         sessionToken: sessionToken,
         appId: this.appId,
         flow: 'COP → Tarjeta → Celo → Uniswap → cCOP',
-        amountUSD: amountUSD.toFixed(2),
-        amountCOP: amountCOP
+        amountCOP: amountCOP,
+        currency: 'COP'
       };
     } catch (error) {
       console.error('Error generating onramp URL:', error);
@@ -301,8 +299,8 @@ class CDPService {
       
       console.log('📋 Configuración onramp:', onrampConfig);
       
-      // Generar URL de onramp
-      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&sessionToken=${sessionToken}`;
+      // Generar URL de onramp con COP directamente
+      const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&sessionToken=${sessionToken}&amount=${amount}&currency=COP`;
       
       console.log('✅ URL de onramp generada:', onrampURL);
       
