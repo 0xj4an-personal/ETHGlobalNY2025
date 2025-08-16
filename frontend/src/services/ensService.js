@@ -2,40 +2,67 @@ import { ethers } from 'ethers';
 
 class ENSService {
   constructor() {
-    // Usar provider público para resolver ENS
-    this.provider = new ethers.JsonRpcProvider('https://eth.llamarpc.com');
+    // Usar múltiples providers para mayor confiabilidad
+    this.providers = [
+      'https://eth.llamarpc.com',
+      'https://rpc.ankr.com/eth',
+      'https://cloudflare-eth.com'
+    ];
+    this.currentProviderIndex = 0;
+    this.provider = new ethers.JsonRpcProvider(this.providers[this.currentProviderIndex]);
   }
 
-  // Resolver ENS a dirección Ethereum
+  // Cambiar provider si falla
+  async switchProvider() {
+    this.currentProviderIndex = (this.currentProviderIndex + 1) % this.providers.length;
+    const newProviderUrl = this.providers[this.currentProviderIndex];
+    console.log('🔄 Cambiando provider a:', newProviderUrl);
+    this.provider = new ethers.JsonRpcProvider(newProviderUrl);
+  }
+
+  // Resolver ENS a dirección Ethereum con retry
   async resolveENS(ensName) {
-    try {
-      console.log('🔍 Resolviendo ENS:', ensName);
-      
-      // Verificar si es una dirección válida (no ENS)
-      if (ethers.isAddress(ensName)) {
-        console.log('✅ Ya es una dirección válida:', ensName);
-        return ensName;
+    let lastError;
+    
+    for (let attempt = 0; attempt < this.providers.length; attempt++) {
+      try {
+        console.log('🔍 Resolviendo ENS:', ensName, 'con provider:', this.providers[this.currentProviderIndex]);
+        
+        // Verificar si es una dirección válida (no ENS)
+        if (ethers.isAddress(ensName)) {
+          console.log('✅ Ya es una dirección válida:', ensName);
+          return ensName;
+        }
+        
+        // Verificar si termina en .eth
+        if (!ensName.endsWith('.eth')) {
+          throw new Error('Nombre ENS debe terminar en .eth');
+        }
+        
+        // Resolver ENS
+        const address = await this.provider.resolveName(ensName);
+        
+        if (!address) {
+          throw new Error(`No se pudo resolver ENS: ${ensName}`);
+        }
+        
+        console.log('✅ ENS resuelto:', ensName, '→', address);
+        return address;
+        
+      } catch (error) {
+        console.warn(`⚠️ Intento ${attempt + 1} falló con provider ${this.providers[this.currentProviderIndex]}:`, error.message);
+        lastError = error;
+        
+        // Cambiar provider para el siguiente intento
+        if (attempt < this.providers.length - 1) {
+          await this.switchProvider();
+        }
       }
-      
-      // Verificar si termina en .eth
-      if (!ensName.endsWith('.eth')) {
-        throw new Error('Nombre ENS debe terminar en .eth');
-      }
-      
-      // Resolver ENS
-      const address = await this.provider.resolveName(ensName);
-      
-      if (!address) {
-        throw new Error(`No se pudo resolver ENS: ${ensName}`);
-      }
-      
-      console.log('✅ ENS resuelto:', ensName, '→', address);
-      return address;
-      
-    } catch (error) {
-      console.error('❌ Error resolviendo ENS:', error);
-      throw new Error(`Error resolviendo ENS ${ensName}: ${error.message}`);
     }
+    
+    // Si todos los providers fallaron
+    console.error('❌ Todos los providers fallaron resolviendo ENS:', ensName);
+    throw new Error(`Error resolviendo ENS ${ensName}: ${lastError.message}`);
   }
 
   // Validar dirección para blockchain específico

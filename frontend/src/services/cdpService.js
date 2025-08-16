@@ -37,7 +37,7 @@ class CDPService {
           purchaseCurrency: 'CELO',
           purchaseNetwork: 'celo',
           country: 'CO',  // ✅ Especificar país
-          sessionToken: buyOptionsData.sessionToken || 'from-buy-options'
+          sessionToken: buyOptionsData.sessionToken || buyOptionsData.jwt || 'from-buy-options'
         });
 
         const onrampURL = `${baseURL}?${params.toString()}`;
@@ -286,17 +286,22 @@ class CDPService {
     try {
       console.log('🌐 Generando URL de onramp para:', walletAddress, amount);
       
-      // Resolver ENS si es necesario
+      // PASO 1: Resolver ENS PRIMERO (antes que nada)
+      console.log('🔍 PASO 1: Resolviendo ENS/dirección...');
       let resolvedAddress = walletAddress;
+      
       try {
         resolvedAddress = await ensService.resolveAndValidateAddress(walletAddress, 'celo');
-        console.log('✅ Dirección resuelta y validada para onramp:', resolvedAddress);
+        console.log('✅ PASO 1 COMPLETADO: Dirección resuelta y validada:', resolvedAddress);
       } catch (ensError) {
-        console.warn('⚠️ Error resolviendo ENS para onramp, usando dirección original:', ensError.message);
+        console.error('❌ PASO 1 FALLÓ: Error resolviendo ENS:', ensError.message);
+        console.log('⚠️ Continuando con dirección original:', walletAddress);
         // Continuar con la dirección original si ENS falla
+        resolvedAddress = walletAddress;
       }
       
-      // Opción 1: Intentar usar Buy Options que funciona para obtener sessionToken
+      // PASO 2: Obtener Buy Options (que funciona)
+      console.log('🔄 PASO 2: Obteniendo Buy Options...');
       try {
         console.log('🔄 Intentando obtener sessionToken desde Buy Options...');
         
@@ -305,46 +310,59 @@ class CDPService {
         
         if (buyOptionsResponse.ok) {
           const buyOptionsData = await buyOptionsResponse.json();
-          console.log('✅ Buy Options obtenido:', buyOptionsData);
+          console.log('✅ PASO 2 COMPLETADO: Buy Options obtenido:', buyOptionsData);
           
-          // Generar URL de onramp con sessionToken del Buy Options
-          const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO&sessionToken=${buyOptionsData.sessionToken || 'from-buy-options'}`;
+          // PASO 3: Generar URL de onramp con sessionToken del Buy Options
+          console.log('🔄 PASO 3: Generando URL de onramp...');
+          const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO&sessionToken=${buyOptionsData.sessionToken || buyOptionsData.jwt || 'from-buy-options'}`;
           
-          console.log('✅ URL de onramp generada usando Buy Options:', onrampURL);
+          console.log('✅ PASO 3 COMPLETADO: URL de onramp generada usando Buy Options:', onrampURL);
           
           return {
             url: onrampURL,
             method: 'Buy Options + Session Token',
             walletAddress: resolvedAddress,
+            originalInput: walletAddress,
             amount: amount,
             currency: 'COP',
             purchaseCurrency: 'CELO',
             network: 'celo',
             country: 'CO',
             buyOptionsData: buyOptionsData,
-            note: 'SessionToken obtenido desde Buy Options que funciona'
+            note: 'SessionToken obtenido desde Buy Options que funciona',
+            steps: {
+              step1: 'ENS Resolved',
+              step2: 'Buy Options Retrieved',
+              step3: 'URL Generated'
+            }
           };
         }
       } catch (buyOptionsError) {
-        console.warn('⚠️ Error obteniendo Buy Options, usando fallback:', buyOptionsError.message);
+        console.warn('⚠️ PASO 2 FALLÓ: Error obteniendo Buy Options:', buyOptionsError.message);
       }
       
-      // Opción 2: Fallback a URL directa (por si acaso)
-      console.log('🔄 Usando fallback a URL directa...');
+      // PASO 4: Fallback a URL directa (por si acaso)
+      console.log('🔄 PASO 4: Usando fallback a URL directa...');
       const fallbackURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO`;
       
-      console.log('✅ URL de onramp fallback generada:', fallbackURL);
+      console.log('✅ PASO 4 COMPLETADO: URL de onramp fallback generada:', fallbackURL);
       
       return {
         url: fallbackURL,
         method: 'Fallback URL Directa',
         walletAddress: resolvedAddress,
+        originalInput: walletAddress,
         amount: amount,
         currency: 'COP',
         purchaseCurrency: 'CELO',
         network: 'celo',
         country: 'CO',
-        note: 'Fallback sin sessionToken - puede no funcionar'
+        note: 'Fallback sin sessionToken - puede no funcionar',
+        steps: {
+          step1: 'ENS Resolved',
+          step2: 'Buy Options Failed',
+          step3: 'Fallback Used'
+        }
       };
       
     } catch (error) {
