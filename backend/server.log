@@ -1,0 +1,201 @@
+🚀 Servidor CDP JWT iniciado en puerto / CDP JWT Server started on port: 3002
+🌐 Escuchando en todas las interfaces (0.0.0.0) / Listening on all interfaces (0.0.0.0)
+📋 Configuración CDP / CDP Configuration: {
+  appId: '✅ Configurado / Configured',
+  apiKey: '✅ Configurado / Configured',
+  privateKey: '✅ Configurado / Configured'
+}
+🌐 Frontend URL: http://localhost:3000
+🔗 Health check: http://localhost:3002/api/health
+🔗 Health check: http://127.0.0.1:3002/api/health
+🔗 Health check: http://0.0.0.0:3002/api/health
+🚀 Generando Buy Quote para / Generating Buy Quote for: { walletAddress: '0x123', amount: 25, country: 'US' }
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [ { address: '0x123', assets: [Array], blockchains: [Array] } ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 400
+❌ Error de CDP Session Token API / CDP Session Token API Error: 400 {"code":"ERROR_CODE_INVALID_REQUEST","message":"InvalidRequest: address [0x123] is not valid for blockchain [celo]"}
+🚀 Generando Buy Quote para / Generating Buy Quote for: { walletAddress: '0x123', amount: 25, country: 'US' }
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [ { address: '0x123', assets: [Array], blockchains: [Array] } ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 400
+❌ Error de CDP Session Token API / CDP Session Token API Error: 400 {"code":"ERROR_CODE_INVALID_REQUEST","message":"InvalidRequest: address [0x123] is not valid for blockchain [celo]"}
+🚀 Generando Buy Quote para / Generating Buy Quote for: {
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+  amount: 25,
+  country: 'US'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array]
+    }
+  ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 200
+✅ Session token generado exitosamente / Session token generated successfully
+📤 Generando URL de onramp / Generating onramp URL: https://pay.coinbase.com/buy/select-asset?appId=undefined&sessionToken=MWYwN2IyOTktNWI4MC02NGJjLWFhYzctZGEzZWE2NDE5ZjFi&destinationWallets=%5B%7B%22address%22%3A%220x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856%22%2C%22assets%22%3A%5B%22CGLD%22%5D%2C%22blockchains%22%3A%5B%22celo%22%5D%7D%5D&sourceAmount=25&sourceCurrency=USD&destinationCurrency=CGLD&country=US
+✅ URL de onramp generada exitosamente / Onramp URL generated successfully
+🔗 Precio Chainlink COP/USD: 4031 (base: 4000, variación: 0.78%)
+💰 Precio COP/USD obtenido / COP/USD price obtained: 4031
+🚀 Generando Buy Quote para / Generating Buy Quote for: {
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+  amount: 25,
+  country: 'US'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array]
+    }
+  ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 200
+✅ Session token generado exitosamente / Session token generated successfully
+📤 Generando URL de onramp / Generating onramp URL: https://pay.coinbase.com/buy/select-asset?appId=undefined&sessionToken=MWYwN2IyOTktODJmOC02OTc0LWIwNDItMmFiOGJkODdmOWE0&destinationWallets=%5B%7B%22address%22%3A%220x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856%22%2C%22assets%22%3A%5B%22CGLD%22%5D%2C%22blockchains%22%3A%5B%22celo%22%5D%7D%5D&sourceAmount=25&sourceCurrency=USD&destinationCurrency=CGLD&country=US
+✅ URL de onramp generada exitosamente / Onramp URL generated successfully
+💰 Usando precio en caché / Using cached price: 4031
+🚀 Generando Session Token para / Generating Session Token for: {
+  country: 'CO',
+  networks: 'celo',
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Token API con payload oficial / Calling CDP Token API with official payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array],
+      supportedNetworks: [Array]
+    }
+  ]
+}
+📡 CDP Token API Response status / CDP Token API Response status: 200
+✅ Session Token generado exitosamente / Session Token generated successfully
+✅ SessionToken encontrado en response.token / SessionToken found in response.token: MWYwN2IyOWEtNDU3NC02Y2NiLWIwNDItMmFiOGJkODdmOWE0
+🚀 Generando Session Token para / Generating Session Token for: {
+  country: 'CO',
+  networks: 'celo',
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Token API con payload oficial / Calling CDP Token API with official payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array],
+      supportedNetworks: [Array]
+    }
+  ]
+}
+📡 CDP Token API Response status / CDP Token API Response status: 200
+✅ Session Token generado exitosamente / Session Token generated successfully
+✅ SessionToken encontrado en response.token / SessionToken found in response.token: MWYwN2IyOWEtNDhjZC02NzlhLWFhYzctZGEzZWE2NDE5ZjFi
+💰 Obteniendo precio COP/USD para red / Getting COP/USD price for network: mainnet
+💰 Usando precio en caché / Using cached price: 4031
+💰 Usando precio en caché / Using cached price: 4031
+💰 Precio real de CELO: $0.344521 USD
+🚀 Generando Buy Quote para / Generating Buy Quote for: {
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+  amount: 24.807740014884644,
+  country: 'US'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array]
+    }
+  ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 200
+✅ Session token generado exitosamente / Session token generated successfully
+📤 Generando URL de onramp / Generating onramp URL: https://pay.coinbase.com/buy/select-asset?appId=undefined&sessionToken=MWYwN2IyOWEtNmQxNC02ODgyLTk5ZjYtNWVkNDUzNjAzMDRk&destinationWallets=%5B%7B%22address%22%3A%220x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856%22%2C%22assets%22%3A%5B%22CGLD%22%5D%2C%22blockchains%22%3A%5B%22celo%22%5D%7D%5D&sourceAmount=24.807740014884644&sourceCurrency=USD&destinationCurrency=CGLD&country=US
+✅ URL de onramp generada exitosamente / Onramp URL generated successfully
+💰 Usando precio en caché / Using cached price: 4031
+💰 Obteniendo precio COP/USD para red / Getting COP/USD price for network: mainnet
+💰 Usando precio en caché / Using cached price: 4031
+💰 Usando precio en caché / Using cached price: 4031
+🚀 Generando Buy Quote para / Generating Buy Quote for: {
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+  amount: 24.807740014884644,
+  country: 'US'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array]
+    }
+  ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 200
+✅ Session token generado exitosamente / Session token generated successfully
+📤 Generando URL de onramp / Generating onramp URL: https://pay.coinbase.com/buy/select-asset?appId=undefined&sessionToken=MWYwN2IyOWEtOWQ5MS02ZDFmLTk5ZjYtNWVkNDUzNjAzMDRk&destinationWallets=%5B%7B%22address%22%3A%220x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856%22%2C%22assets%22%3A%5B%22CGLD%22%5D%2C%22blockchains%22%3A%5B%22celo%22%5D%7D%5D&sourceAmount=24.807740014884644&sourceCurrency=USD&destinationCurrency=CGLD&country=US
+✅ URL de onramp generada exitosamente / Onramp URL generated successfully
+💰 Usando precio en caché / Using cached price: 4031
+🚀 Generando Buy Quote para / Generating Buy Quote for: {
+  walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+  amount: 100000,
+  country: 'US'
+}
+✅ JWT generado exitosamente manualmente / JWT generated successfully manually
+🔑 Token (primeros 50 chars): / Token (first 50 chars): eyJhbGciOiJFZERTQSIsImtpZCI6IjM4ZWU4NmY4LTFlMzAtND...
+📤 Llamando a CDP Session Token API con payload / Calling CDP Session Token API with payload: {
+  destinationWallets: [
+    {
+      address: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856',
+      assets: [Array],
+      blockchains: [Array]
+    }
+  ],
+  sourceCurrency: 'USD',
+  destinationCurrency: 'CGLD',
+  country: 'US'
+}
+📡 CDP Session Token API Response status / CDP Session Token API Response status: 200
+✅ Session token generado exitosamente / Session token generated successfully
+📤 Generando URL de onramp / Generating onramp URL: https://pay.coinbase.com/buy/select-asset?appId=undefined&sessionToken=MWYwN2IyOWEtYTliMi02YTJjLWFhYzctZGEzZWE2NDE5ZjFi&destinationWallets=%5B%7B%22address%22%3A%220x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856%22%2C%22assets%22%3A%5B%22CGLD%22%5D%2C%22blockchains%22%3A%5B%22celo%22%5D%7D%5D&sourceAmount=100000&sourceCurrency=USD&destinationCurrency=CGLD&country=US
+✅ URL de onramp generada exitosamente / Onramp URL generated successfully
+💰 Usando precio en caché / Using cached price: 4031

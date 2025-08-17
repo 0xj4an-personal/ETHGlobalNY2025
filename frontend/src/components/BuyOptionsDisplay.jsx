@@ -13,7 +13,9 @@ const BuyOptionsDisplay = () => {
     setError(null);
     
     try {
-      const options = await cdpService.getBuyOptions('CO', 'celo');
+      // Usar dirección por defecto para Buy Options
+      const defaultWalletAddress = '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856';
+      const options = await cdpService.getBuyOptions('CO', 'celo', defaultWalletAddress);
       setBuyOptions(options);
       console.log('✅ Buy Options cargados:', options);
     } catch (err) {

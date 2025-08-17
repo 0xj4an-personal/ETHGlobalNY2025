@@ -3,7 +3,6 @@ import './App.css'
 import cdpService from './services/cdpService'
 import QuoteDisplay from './components/QuoteDisplay'
 import FlowInfo from './components/FlowInfo'
-import APITester from './components/APITester'
 import BuyOptionsDisplay from './components/BuyOptionsDisplay'
 
 function App() {
@@ -221,8 +220,7 @@ Por favor, verifica la consola del navegador para más detalles.`)
           />
         )}
         
-        {/* Sección de testing */}
-        <APITester onTestAPI={handleTestAPI} />
+
       </main>
     </div>
   )
