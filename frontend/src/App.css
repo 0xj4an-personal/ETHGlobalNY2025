@@ -62,8 +62,53 @@ body {
 }
 
 .app-main {
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+/* Layout de dos columnas para la sección superior */
+.top-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.flow-section,
+.options-section {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Unificar estilos de los formularios */
+.flow-section .flow-info,
+.options-section .buy-options-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que el contenido se expanda para llenar el espacio */
+.flow-section .flow-info .flow-steps,
+.options-section .buy-options-container .buy-options-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .top-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .flow-section,
+  .options-section {
+    min-height: auto;
+  }
 }
 
 .form-container {

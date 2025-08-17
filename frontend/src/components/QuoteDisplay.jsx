@@ -1,5 +1,6 @@
 import React from 'react';
 import './QuoteDisplay.css';
+import { formatCOP, formatCELO, formatCCOP } from '../utils/formatters';
 
 function QuoteDisplay({ quote, onProceed, onCancel }) {
   if (!quote) return null;
@@ -11,45 +12,35 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
         <p>Compra Celo y recibe cCOP automáticamente</p>
       </div>
 
-              <div className="quote-details">
+        <div className="quote-details">
           <div className="quote-row">
             <span>Monto en COP:</span>
-            <span className="amount">{quote.sourceAmount.toLocaleString()} {quote.sourceCurrency}</span>
-          </div>
-          
-          <div className="quote-row">
-            <span>Equivale a USD:</span>
-            <span className="usd-amount">${quote.amountUSD} USD</span>
+            <span className="amount">{quote.monto_cop}</span>
           </div>
           
           <div className="quote-row">
             <span>Celo que se compra:</span>
-            <span className="celo-amount">{quote.celoAmount} CELO</span>
-          </div>
-          
-          <div className="quote-row">
-            <span>Precio Celo:</span>
-            <span className="price">${quote.celoPriceUSD} USD</span>
+            <span className="celo-amount">{formatCELO(parseFloat(quote.celo_a_comprar))}</span>
           </div>
           
           <div className="quote-row">
             <span>Fee de transacción:</span>
-            <span className="fees">{quote.transactionFee} COP</span>
+            <span className="fees">{quote.fee_transaccion}</span>
           </div>
           
           <div className="quote-row">
             <span>Fee de red:</span>
-            <span className="fees">{quote.networkFee} COP</span>
+            <span className="fees">{quote.fee_red}</span>
           </div>
           
           <div className="quote-row total-row">
             <span>Total fees:</span>
-            <span className="total-fees">{quote.estimatedFees} COP</span>
+            <span className="total-fees">{quote.total_fees}</span>
           </div>
           
           <div className="quote-row highlight-row">
             <span>🎯 cCOP a recibir:</span>
-            <span className="ccop-amount">{parseFloat(quote.destinationAmount).toLocaleString()} cCOP</span>
+            <span className="ccop-amount">{formatCCOP(parseFloat(quote.destinationAmount))}</span>
           </div>
           
           <div className="quote-row">
@@ -60,6 +51,11 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           <div className="quote-row">
             <span>Red:</span>
             <span className="network">{quote.network.toUpperCase()}</span>
+          </div>
+          
+          <div className="quote-row">
+            <span>Tipo de cambio:</span>
+            <span className="exchange-rate">{quote.tipo_cambio?.replace(/\./g, ',')?.replace(/,/g, '.') || quote.tipo_cambio}</span>
           </div>
           
           <div className="quote-row">

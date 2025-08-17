@@ -214,74 +214,72 @@ class CDPService {
     }
   }
 
-  // Obtener quote para la compra desde COP
+  // Obtener quote real desde el backend (solo COP y CELO)
   async getQuote(amountCOP, sourceCurrency = 'COP', destinationAsset = 'cCOP') {
     try {
-      // Simular quote realista para COP → Celo → cCOP
-      // En producción, esto vendría de la API de Quote de CDP
+      console.log('💰 Obteniendo quote real desde el backend para:', amountCOP, 'COP');
       
-      // Simular precios actuales
-      const celoPriceUSD = 0.50; // Precio de Celo en USD
-      const usdPriceCOP = 4000; // 1 USD = 4000 COP (aproximado)
-      const celoPriceCOP = celoPriceUSD * usdPriceCOP; // 1 Celo = 2000 COP
+      // Llamar al backend para obtener quote real
+      const response = await fetch('http://localhost:3002/api/generate-buy-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: '0x8f51DC0791CdDDDCE08052FfF939eb7cf0c17856', // Dirección de prueba que funciona
+          amount: amountCOP / 4000 // Convertir COP a USD para el backend
+        })
+      });
       
-      const transactionFee = 2.99; // Fee fijo de Coinbase en USD
-      const networkFee = 0.01; // Fee de red Celo en USD
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Error del backend:', response.status, errorText);
+        throw new Error(`Backend error: ${response.status} - ${errorText}`);
+      }
       
-      // Convertir fees a COP
-      const transactionFeeCOP = transactionFee * usdPriceCOP;
-      const networkFeeCOP = networkFee * usdPriceCOP;
-      const totalFeesCOP = transactionFeeCOP + networkFeeCOP;
+      const backendData = await response.json();
+      console.log('✅ Quote real obtenido del backend:', backendData);
       
-      // Calcular cuánto USD necesitamos para obtener la cantidad de COP deseada
-      const amountUSD = amountCOP / usdPriceCOP;
-      const amountAfterFeesUSD = amountUSD + (totalFeesCOP / usdPriceCOP);
-      
-      // Calcular cuánto Celo necesitamos comprar
-      const celoAmount = amountAfterFeesUSD / celoPriceUSD;
-      
-      // Calcular cuánto cCOP recibirá (simulando swap automático)
-      const swapFee = 0.003; // 0.3% como Uniswap V3
-      const celoAfterSwapFee = celoAmount * (1 - swapFee);
-      const cCOPAmount = celoAfterSwapFee * celoPriceCOP; // Convertir a COP
-      
+      // Extraer datos del backend y formatearlos para el frontend
       const quote = {
+        // Datos principales en COP
         sourceAmount: amountCOP,
         sourceCurrency: sourceCurrency,
-        amountUSD: amountUSD.toFixed(2),
-        celoAmount: celoAmount.toFixed(6),
-        celoPriceUSD: celoPriceUSD.toFixed(2),
-        celoPriceCOP: celoPriceCOP.toFixed(0),
-        destinationAmount: cCOPAmount.toFixed(2),
+        monto_cop: backendData.monto_cop, // Ya formateado en COP
+        celo_a_comprar: backendData.celo_a_comprar, // CELO con 6 decimales
+        
+        // Fees en COP (ya formateados)
+        fee_transaccion: backendData.quote.fee_transaccion,
+        fee_red: backendData.quote.fee_red,
+        total_fees: backendData.quote.total_fees,
+        
+        // Información del backend
+        quote_id: backendData.quote.quote_id,
+        onramp_url: backendData.onrampUrl,
+        optimized_onramp_url: backendData.optimizedOnrampUrl,
+        session_token: backendData.sessionToken,
+        tipo_cambio: backendData.tipo_cambio,
+        
+        // Datos calculados para el frontend
+        destinationAmount: (parseFloat(backendData.celo_a_comprar) * 4000).toFixed(2), // Aproximado para cCOP
         destinationAsset: 'cCOP',
-        finalAsset: 'cCOP (Peso Colombiano Digital)',
         network: 'celo',
-        estimatedFees: totalFeesCOP.toFixed(0),
-        transactionFee: transactionFeeCOP.toFixed(0),
-        networkFee: networkFeeCOP.toFixed(0),
-        swapFee: (swapFee * 100).toFixed(2) + '%',
-        totalFeesPercentage: ((totalFeesCOP / amountCOP) * 100).toFixed(2) + '%',
-        exchangeRate: celoPriceUSD,
-        usdPriceCOP: usdPriceCOP.toFixed(0),
+        swapFee: '0.30%',
         expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // 5 minutos
-        paymentMethods: ['card', 'debit_card'],
-        supportedCountries: ['US', 'CO', 'MX', 'BR', 'AR'],
-        process: [
-          'Compra Celo con tarjeta',
-          'Swap automático Celo → cCOP',
-          'Recibe cCOP en tu wallet'
-        ]
+        
+        // Datos del backend para debugging
+        backendData: backendData
       };
 
-      console.log('Generated Quote for COP to cCOP:', quote);
+      console.log('✅ Quote formateado para frontend:', quote);
       return quote;
     } catch (error) {
-      console.error('Error getting quote:', error);
-      throw new Error('No se pudo obtener el quote');
+      console.error('❌ Error obteniendo quote del backend:', error);
+      throw new Error(`No se pudo obtener el quote del backend: ${error.message}`);
     }
   }
 
-  // Generar URL de onramp usando Buy Options que funciona
+  // Generar URL de onramp usando Buy Quote API según recomendaciones oficiales de Coinbase
   async generateOnrampURL(walletAddress, amount) {
     try {
       console.log('🌐 Generando URL de onramp para:', walletAddress, amount);
@@ -300,27 +298,130 @@ class CDPService {
         resolvedAddress = walletAddress;
       }
       
-      // PASO 2: Obtener Buy Options (que funciona)
-      console.log('🔄 PASO 2: Obteniendo Buy Options...');
+      // PASO 2: Usar Buy Quote API según recomendaciones oficiales de Coinbase
+      console.log('🔄 PASO 2: Llamando a Buy Quote API (recomendación oficial de Coinbase)...');
       try {
-        console.log('🔄 Intentando obtener sessionToken desde Buy Options...');
+        console.log('🔄 Llamando a Buy Quote API con JWT...');
+        
+        // Llamar a Buy Quote API según documentación oficial
+        const buyQuoteResponse = await fetch(`http://localhost:3002/api/generate-buy-quote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            walletAddress: resolvedAddress,
+            amount: amount,
+            country: 'CO',
+          })
+        });
+        
+        if (buyQuoteResponse.ok) {
+          const buyQuoteData = await buyQuoteResponse.json();
+          console.log('✅ PASO 2 COMPLETADO: Buy Quote obtenido:', buyQuoteData);
+          
+          // PASO 3: Extraer onrampUrl que contiene el session token
+          console.log('🔄 PASO 3: Extrayendo onrampUrl con session token...');
+          
+          if (buyQuoteData.onrampUrl) {
+            console.log('✅ onrampUrl encontrado en Buy Quote API:', buyQuoteData.onrampUrl);
+            console.log('🎯 Esta URL contiene el session token según recomendaciones de Coinbase');
+            
+            return {
+              url: buyQuoteData.onrampUrl,
+              method: 'Buy Quote API + onrampUrl (Recomendación Oficial de Coinbase)',
+              walletAddress: resolvedAddress,
+              originalInput: walletAddress,
+              amount: amount,
+              currency: 'COP',
+              purchaseCurrency: 'CELO',
+              network: 'celo',
+              country: 'CO',
+              sessionToken: 'Incluido en onrampUrl',
+              buyQuoteData: buyQuoteData,
+              note: 'onrampUrl obtenido de Buy Quote API - contiene session token según Coinbase',
+              steps: {
+                step1: 'ENS Resolved',
+                step2: 'Buy Quote API Called',
+                step3: 'onrampUrl Extracted (Contains Session Token)'
+              },
+              source: 'Oficial de Coinbase - Buy Quote API devuelve onrampUrl con session token'
+            };
+          } else {
+            console.warn('⚠️ onrampUrl no encontrado en Buy Quote API');
+            console.log('📊 Contenido completo de buyQuoteData:', buyQuoteData);
+          }
+        } else {
+          console.warn('⚠️ Buy Quote API falló con status:', buyQuoteResponse.status);
+          const errorText = await buyQuoteResponse.text();
+          console.warn('⚠️ Error details:', errorText);
+        }
+      } catch (buyQuoteError) {
+        console.warn('⚠️ PASO 2 FALLÓ: Error llamando a Buy Quote API:', buyQuoteError.message);
+      }
+      
+      // PASO 4: Fallback a Buy Options (por si acaso)
+      console.log('🔄 PASO 4: Usando fallback a Buy Options...');
+      try {
+        console.log('🔄 Llamando a Buy Options API...');
         
         // Llamar a Buy Options que funciona
         const buyOptionsResponse = await fetch(`http://localhost:3002/api/buy-options?country=CO&networks=celo`);
         
         if (buyOptionsResponse.ok) {
           const buyOptionsData = await buyOptionsResponse.json();
-          console.log('✅ PASO 2 COMPLETADO: Buy Options obtenido:', buyOptionsData);
+          console.log('✅ PASO 4 COMPLETADO: Buy Options obtenido:', buyOptionsData);
           
-          // PASO 3: Generar URL de onramp con sessionToken del Buy Options
-          console.log('🔄 PASO 3: Generando URL de onramp...');
-          const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO&sessionToken=${buyOptionsData.sessionToken || buyOptionsData.jwt || 'from-buy-options'}`;
+          // 🔍 INVESTIGACIÓN: Ver exactamente qué contiene buyOptionsData
+          console.log('🔍 INVESTIGACIÓN: Contenido completo de Buy Options:');
+          console.log('📊 buyOptionsData.success:', buyOptionsData.success);
+          console.log('📊 buyOptionsData.data:', buyOptionsData.data);
+          console.log('📊 buyOptionsData.jwt:', buyOptionsData.jwt);
+          console.log('📊 buyOptionsData.sessionToken:', buyOptionsData.sessionToken);
+          console.log('📊 buyOptionsData.quote:', buyOptionsData.quote);
+          console.log('📊 buyOptionsData.onrampUrl:', buyOptionsData.onrampUrl);
           
-          console.log('✅ PASO 3 COMPLETADO: URL de onramp generada usando Buy Options:', onrampURL);
+          // Buscar sessionToken en diferentes ubicaciones posibles
+          let sessionToken = null;
+          
+          // Opción 1: Buscar en data.sessionToken
+          if (buyOptionsData.data?.sessionToken) {
+            sessionToken = buyOptionsData.data.sessionToken;
+            console.log('✅ SessionToken encontrado en data.sessionToken:', sessionToken);
+          }
+          // Opción 2: Buscar en data.token
+          else if (buyOptionsData.data?.token) {
+            sessionToken = buyOptionsData.data.token;
+            console.log('✅ Token encontrado en data.token:', sessionToken);
+          }
+          // Opción 3: Buscar en data.quote.sessionToken
+          else if (buyOptionsData.data?.quote?.sessionToken) {
+            sessionToken = buyOptionsData.data.quote.sessionToken;
+            console.log('✅ SessionToken encontrado en data.quote.sessionToken:', sessionToken);
+          }
+          // Opción 4: Buscar en data.onrampUrl
+          else if (buyOptionsData.data?.onrampUrl) {
+            sessionToken = buyOptionsData.data.onrampUrl;
+            console.log('✅ onrampUrl encontrado en data.onrampUrl:', sessionToken);
+          }
+          // Opción 5: Usar JWT como fallback (aunque sabemos que no es válido)
+          else {
+            sessionToken = buyOptionsData.jwt || 'from-buy-options';
+            console.log('⚠️ Usando JWT como fallback (puede no ser válido):', sessionToken);
+          }
+          
+          // PASO 5: Generar URL de onramp con sessionToken encontrado
+          console.log('🔄 PASO 5: Generando URL de onramp...');
+          
+          const onrampURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO&sessionToken=${sessionToken}`;
+          
+          console.log('✅ PASO 5 COMPLETADO: URL de onramp generada usando Buy Options:', onrampURL);
+          console.log('🔑 SessionToken usado:', sessionToken);
+          console.log('⚠️ NOTA: Este es un fallback - puede no funcionar si no es un sessionToken válido');
           
           return {
             url: onrampURL,
-            method: 'Buy Options + Session Token',
+            method: 'Buy Options + Session Token (Fallback)',
             walletAddress: resolvedAddress,
             originalInput: walletAddress,
             amount: amount,
@@ -329,27 +430,28 @@ class CDPService {
             network: 'celo',
             country: 'CO',
             buyOptionsData: buyOptionsData,
-            note: 'SessionToken obtenido desde Buy Options que funciona',
+            sessionToken: sessionToken,
+            note: 'SessionToken obtenido desde Buy Options (fallback)',
             steps: {
               step1: 'ENS Resolved',
-              step2: 'Buy Options Retrieved',
-              step3: 'URL Generated'
+              step2: 'Buy Quote Failed',
+              step3: 'Buy Options Fallback Used'
             }
           };
         }
       } catch (buyOptionsError) {
-        console.warn('⚠️ PASO 2 FALLÓ: Error obteniendo Buy Options:', buyOptionsError.message);
+        console.warn('⚠️ PASO 4 FALLÓ: Error obteniendo Buy Options:', buyOptionsError.message);
       }
       
-      // PASO 4: Fallback a URL directa (por si acaso)
-      console.log('🔄 PASO 4: Usando fallback a URL directa...');
+      // PASO 6: Fallback final a URL directa sin sessionToken
+      console.log('🔄 PASO 6: Usando fallback final a URL directa...');
       const fallbackURL = `https://pay.coinbase.com/buy/select-asset?appId=${this.appId}&amount=${amount}&currency=COP&destinationAddress=${resolvedAddress}&purchaseCurrency=CELO&purchaseNetwork=celo&country=CO`;
       
-      console.log('✅ PASO 4 COMPLETADO: URL de onramp fallback generada:', fallbackURL);
+      console.log('✅ PASO 6 COMPLETADO: URL de onramp fallback final generada:', fallbackURL);
       
       return {
         url: fallbackURL,
-        method: 'Fallback URL Directa',
+        method: 'Fallback URL Directa (Sin SessionToken)',
         walletAddress: resolvedAddress,
         originalInput: walletAddress,
         amount: amount,
@@ -357,11 +459,12 @@ class CDPService {
         purchaseCurrency: 'CELO',
         network: 'celo',
         country: 'CO',
-        note: 'Fallback sin sessionToken - puede no funcionar',
+        note: 'Fallback final sin sessionToken - todas las APIs fallaron',
         steps: {
           step1: 'ENS Resolved',
-          step2: 'Buy Options Failed',
-          step3: 'Fallback Used'
+          step2: 'Buy Quote Failed',
+          step3: 'Buy Options Failed',
+          step4: 'Final Fallback Used'
         }
       };
       

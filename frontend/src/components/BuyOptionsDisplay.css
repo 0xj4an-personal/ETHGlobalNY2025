@@ -4,6 +4,9 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   margin: 20px 0;
   overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .buy-options-header {
@@ -43,6 +46,9 @@
 
 .buy-options-content {
   padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .country-info {

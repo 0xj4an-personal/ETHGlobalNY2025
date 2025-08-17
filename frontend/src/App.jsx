@@ -180,9 +180,17 @@ Por favor, verifica la consola del navegador para más detalles.`)
       </header>
 
       <main className="app-main">
-        {/* Buy Options Display */}
-        <BuyOptionsDisplay />
+        {/* Sección superior: Flujo y Opciones lado a lado */}
+        <div className="top-section">
+          <div className="flow-section">
+            <FlowInfo />
+          </div>
+          <div className="options-section">
+            <BuyOptionsDisplay />
+          </div>
+        </div>
         
+        {/* Sección del formulario */}
         <div className="form-container">
           <div className="form-group">
             <label htmlFor="wallet">Dirección de Wallet:</label>
@@ -254,9 +262,8 @@ Por favor, verifica la consola del navegador para más detalles.`)
             onCancel={handleCancelQuote}
           />
         )}
-
-        <FlowInfo />
         
+        {/* Sección de testing */}
         <APITester onTestAPI={handleTestAPI} />
       </main>
     </div>

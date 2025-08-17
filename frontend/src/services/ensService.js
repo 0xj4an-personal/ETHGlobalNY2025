@@ -2,11 +2,11 @@ import { ethers } from 'ethers';
 
 class ENSService {
   constructor() {
-    // Usar múltiples providers para mayor confiabilidad
+    // Usar providers que funcionen en el navegador sin CORS
     this.providers = [
-      'https://eth.llamarpc.com',
-      'https://rpc.ankr.com/eth',
-      'https://cloudflare-eth.com'
+      'https://ethereum.publicnode.com',
+      'https://rpc.builder0x69.io',
+      'https://rpc.ankr.com/eth_goerli' // Goerli testnet como fallback
     ];
     this.currentProviderIndex = 0;
     this.provider = new ethers.JsonRpcProvider(this.providers[this.currentProviderIndex]);
