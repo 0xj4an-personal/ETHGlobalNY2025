@@ -16,17 +16,20 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Production stage - use serve instead of nginx for Railway
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
 
 # Copy built files from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist ./dist
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Install serve globally
+RUN npm install -g serve
 
 # Expose port
-EXPOSE 80
+EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the app with serve
+CMD ["serve", "-s", "dist", "-l", "3000"]
