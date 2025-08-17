@@ -15,7 +15,7 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
         <div className="quote-details">
           <div className="quote-row">
             <span>Monto en COP:</span>
-            <span className="amount">{formatCOP(parseFloat(quote.monto_cop), 0)}</span>
+            <span className="amount">{quote.monto_cop}</span>
           </div>
           
           <div className="quote-row">
@@ -25,17 +25,17 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           
           <div className="quote-row">
             <span>Fee de transacción:</span>
-            <span className="fees">{formatCOP(parseFloat(quote.fee_transaccion), 2)}</span>
+            <span className="fees">{quote.fee_transaccion}</span>
           </div>
           
           <div className="quote-row">
             <span>Fee de red:</span>
-            <span className="fees">{formatCOP(parseFloat(quote.fee_red), 2)}</span>
+            <span className="fees">{quote.fee_red}</span>
           </div>
           
           <div className="quote-row total-row">
             <span>Total fees:</span>
-            <span className="total-fees">{formatCOP(parseFloat(quote.total_fees), 2)}</span>
+            <span className="total-fees">{quote.total_fees}</span>
           </div>
           
           <div className="quote-row highlight-row">
@@ -50,7 +50,7 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           
           <div className="quote-row">
             <span>Fee de swap (0.3%):</span>
-            <span className="swap-fee">{formatCOP(parseFloat(quote.swapFee), 2)}</span>
+            <span className="swap-fee">{quote.swapFee}</span>
           </div>
           
           <div className="quote-row">
