@@ -19,7 +19,7 @@ async function main() {
 
   // Paso 1: Deploy del contrato de swap para testnet
   console.log("\n📦 Paso 1: Deployando CeloSwapContractTestnet...");
-  const CeloSwapContractTestnet = await ethers.getContractFactory("CeloSwapContractTestnet");
+  const CeloSwapContractTestnet = await ethers.getContractFactory("contracts/testnet/CeloSwapContractTestnet.sol:CeloSwapContractTestnet");
   const celoSwapContract = await CeloSwapContractTestnet.deploy();
   await celoSwapContract.waitForDeployment();
   
@@ -28,7 +28,7 @@ async function main() {
 
   // Paso 2: Deploy del contrato de integración
   console.log("\n📦 Paso 2: Deployando CeloOnrampIntegrationTestnet...");
-  const CeloOnrampIntegrationTestnet = await ethers.getContractFactory("CeloOnrampIntegrationTestnet");
+  const CeloOnrampIntegrationTestnet = await ethers.getContractFactory("contracts/testnet/CeloOnrampIntegrationTestnet.sol:CeloOnrampIntegrationTestnet");
   const onrampIntegration = await CeloOnrampIntegrationTestnet.deploy(swapContractAddress);
   await onrampIntegration.waitForDeployment();
   

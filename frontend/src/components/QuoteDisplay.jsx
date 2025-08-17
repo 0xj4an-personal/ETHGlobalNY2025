@@ -19,6 +19,11 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           </div>
           
           <div className="quote-row">
+            <span>Monto en USD:</span>
+            <span className="amount usd-amount">{quote.monto_usd}</span>
+          </div>
+          
+          <div className="quote-row">
             <span>Celo que se compra:</span>
             <span className="celo-amount">{formatCELO(parseFloat(quote.celo_a_comprar))}</span>
           </div>
@@ -40,7 +45,12 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           
           <div className="quote-row highlight-row">
             <span>🎯 cCOP a recibir:</span>
-            <span className="ccop-amount">{formatCCOP(parseFloat(quote.destinationAmount))}</span>
+            <span className="ccop-amount">{formatCCOP(parseFloat(quote.realCCOPAmount))}</span>
+          </div>
+          
+          <div className="quote-row">
+            <span>🔗 Relación cCOP = COP:</span>
+            <span className="relation">{quote.relation}</span>
           </div>
           
           <div className="quote-row">

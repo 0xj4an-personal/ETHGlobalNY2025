@@ -8,7 +8,7 @@ import BuyOptionsDisplay from './components/BuyOptionsDisplay'
 
 function App() {
   const [walletAddress, setWalletAddress] = useState('')
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState('100000')
   const [isLoading, setIsLoading] = useState(false)
   const [quote, setQuote] = useState(null)
   const [showQuote, setShowQuote] = useState(false)
@@ -125,49 +125,7 @@ Por favor, verifica la consola del navegador para más detalles.`)
     setQuote(null)
   }
 
-  const handleTestAPI = async (testAddress, testAmount) => {
-    try {
-      console.log('🧪 Test API iniciado para:', testAddress, testAmount);
-      
-      // Generar JWT token
-      const jwtToken = await cdpService.generateJWTToken();
-      
-      // Generar session token
-      const sessionToken = await cdpService.generateSessionTokenWithAddress(testAddress);
-      
-      // Generar URL de onramp
-      const onrampData = await cdpService.generateOnrampURL(testAddress, testAmount);
-      
-      // Preparar payload para mostrar
-      const payload = {
-        addresses: [
-          {
-            address: testAddress,
-            blockchains: ["celo"]
-          }
-        ],
-        assets: ["CELO"],
-        destinationWallets: [
-          {
-            address: testAddress,
-            assets: ["CELO"],
-            blockchains: ["celo"],
-            supportedNetworks: ["celo"]
-          }
-        ]
-      };
-      
-      return {
-        jwtToken,
-        sessionToken,
-        onrampURL: onrampData.url,
-        payload
-      };
-    } catch (error) {
-      console.error('❌ Error en test API:', error);
-      throw error;
-    }
-  }
+
 
   return (
     <div className="app">

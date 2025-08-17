@@ -33,7 +33,7 @@ contract CeloOnrampIntegration is Ownable, ReentrancyGuard, Pausable {
     
     // Constructor
     constructor(address _celoSwapContract) Ownable(msg.sender) {
-        celoSwapContract = CeloSwapContract(_celoSwapContract);
+        celoSwapContract = CeloSwapContract(payable(_celoSwapContract));
         // El deployer es el owner
         authorizedOnramp[msg.sender] = true;
     }
@@ -118,7 +118,7 @@ contract CeloOnrampIntegration is Ownable, ReentrancyGuard, Pausable {
      */
     function updateSwapContract(address newSwapContract) external onlyOwner {
         require(newSwapContract != address(0), "Invalid swap contract address");
-        celoSwapContract = CeloSwapContract(newSwapContract);
+        celoSwapContract = CeloSwapContract(payable(newSwapContract));
     }
     
     /**
