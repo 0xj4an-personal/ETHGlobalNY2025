@@ -8,15 +8,22 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "@coinbase/cdp-sdk": "^1.35.0",
     "cors": "^2.8.5",
-    "jsonwebtoken": "^9.0.2",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["celo", "onramp", "cdp", "jwt", "coinbase"],
+  "keywords": [
+    "celo",
+    "onramp",
+    "cdp",
+    "jwt",
+    "coinbase"
+  ],
   "author": "0xj4an",
   "license": "MIT"
 }
