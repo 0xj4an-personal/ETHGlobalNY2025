@@ -6,9 +6,9 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #040d23 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #000208 0%, #0c1d56 100%);
   min-height: 100vh;
-  color: #333;
+  color: #e5e7eb;
 }
 
 .app {
@@ -25,21 +25,23 @@ body {
 .app-header h1 {
   font-size: 2.5rem;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  color: #f8fafc;
 }
 
 .app-header p {
   font-size: 1.2rem;
-  opacity: 0.9;
+  opacity: 0.95;
+  color: #e2e8f0;
 }
 
 .testing-notice {
-  background: rgba(255, 193, 7, 0.2);
-  border: 2px solid #ffc107;
+  background: rgba(255, 193, 7, 0.15);
+  border: 2px solid #fbbf24;
   border-radius: 8px;
   padding: 10px 15px;
   margin-top: 15px;
-  color: #856404;
+  color: #fef3c7;
   font-size: 0.9rem;
   text-align: center;
   max-width: 500px;
@@ -48,17 +50,17 @@ body {
 }
 
 .testing-notice strong {
-  color: #856404;
+  color: #fef3c7;
 }
 
 .testing-notice.success {
-  background: rgba(40, 167, 69, 0.2);
-  border-color: #28a745;
-  color: #155724;
+  background: rgba(34, 197, 94, 0.15);
+  border-color: #22c55e;
+  color: #dcfce7;
 }
 
 .testing-notice.success strong {
-  color: #155724;
+  color: #dcfce7;
 }
 
 .app-main {
@@ -85,16 +87,17 @@ body {
 .flow-section-bottom {
   margin-top: 40px;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(30, 41, 59, 0.95);
   border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  border: 2px solid #e1e5e9;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 2px solid #475569;
+  backdrop-filter: blur(10px);
 }
 
 .flow-section-bottom h3 {
   text-align: center;
   margin-bottom: 25px;
-  color: #333;
+  color: #f8fafc;
   font-size: 1.5rem;
 }
 
@@ -129,11 +132,13 @@ body {
 }
 
 .form-container {
-  background: white;
+  background: rgba(30, 41, 59, 0.95);
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   margin-bottom: 30px;
+  border: 2px solid #475569;
+  backdrop-filter: blur(10px);
 }
 
 .form-group {
@@ -144,21 +149,29 @@ body {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #555;
+  color: #e2e8f0;
 }
 
 .form-group input {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #475569;
   border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  background: rgba(15, 23, 42, 0.8);
+  color: #f8fafc;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #1e40af;
+  border-color: #3b82f6;
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
 }
 
 .amount-buttons {
@@ -170,10 +183,10 @@ body {
 
 .amount-btn {
   padding: 10px 15px;
-  background: #f8f9fa;
-  border: 2px solid #e1e5e9;
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px solid #475569;
   border-radius: 8px;
-  color: #555;
+  color: #e2e8f0;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -181,10 +194,11 @@ body {
 }
 
 .amount-btn:hover {
-  background: #1e40af;
-  border-color: #1e40af;
+  background: #3b82f6;
+  border-color: #3b82f6;
   color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .amount-btn:active {
@@ -194,7 +208,7 @@ body {
 .onramp-button {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -206,7 +220,7 @@ body {
 
 .onramp-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
 }
 
 .onramp-button:disabled {
@@ -215,15 +229,17 @@ body {
 }
 
 .info {
-  background: rgba(255,255,255,0.9);
+  background: rgba(30, 41, 59, 0.95);
   padding: 25px;
   border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 2px solid #475569;
+  backdrop-filter: blur(10px);
 }
 
 .info h3 {
   margin-bottom: 15px;
-  color: #333;
+  color: #f8fafc;
   text-align: center;
 }
 
@@ -234,19 +250,20 @@ body {
 .info li {
   margin-bottom: 8px;
   line-height: 1.5;
+  color: #e2e8f0;
 }
 
 .process-info {
   margin-top: 20px;
   padding: 15px;
-  background: rgba(30, 64, 175, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   border-radius: 8px;
-  border-left: 4px solid #1e40af;
+  border-left: 4px solid #3b82f6;
 }
 
 .process-info p {
   margin: 0;
-  color: #333;
+  color: #e2e8f0;
   font-size: 0.95rem;
 }
 
