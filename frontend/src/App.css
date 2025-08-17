@@ -81,6 +81,23 @@ body {
   flex-direction: column;
 }
 
+/* Nueva sección del flujo en la parte inferior */
+.flow-section-bottom {
+  margin-top: 40px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border: 2px solid #e1e5e9;
+}
+
+.flow-section-bottom h3 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 1.5rem;
+}
+
 /* Unificar estilos de los formularios */
 .flow-section .flow-info,
 .options-section .buy-options-container {
