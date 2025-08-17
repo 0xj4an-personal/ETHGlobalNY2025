@@ -14,7 +14,8 @@ export function formatColombianNumber(value, decimals = 0) {
     
     // Determinar si usar decimales basado en el valor / Determine whether to use decimals based on value
     let finalDecimals = decimals;
-    if (Math.abs(numValue) >= 100) {
+    // Solo aplicar la regla automática si no se especifican decimales explícitamente / Only apply automatic rule if decimals not explicitly specified
+    if (decimals === 0 && Math.abs(numValue) >= 100) {
       finalDecimals = 0; // Sin decimales para valores >= 100 / No decimals for values >= 100
     }
     
