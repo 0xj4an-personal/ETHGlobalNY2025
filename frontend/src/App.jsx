@@ -124,8 +124,6 @@ Por favor, verifica la consola del navegador para más detalles.`)
     setQuote(null)
   }
 
-
-
   return (
     <div className="app">
       <header className="app-header">
@@ -137,16 +135,6 @@ Por favor, verifica la consola del navegador para más detalles.`)
       </header>
 
       <main className="app-main">
-        {/* Sección superior: Flujo y Opciones lado a lado */}
-        <div className="top-section">
-          <div className="flow-section">
-            <FlowInfo />
-          </div>
-          <div className="options-section">
-            <BuyOptionsDisplay />
-          </div>
-        </div>
-        
         {/* Sección del formulario */}
         <div className="form-container">
           <div className="form-group">
@@ -219,8 +207,11 @@ Por favor, verifica la consola del navegador para más detalles.`)
             onCancel={handleCancelQuote}
           />
         )}
-        
 
+        {/* Sección del flujo de transacción (movida hacia abajo) */}
+        <div className="flow-section-bottom">
+          <FlowInfo />
+        </div>
       </main>
     </div>
   )
