@@ -1,26 +1,42 @@
 {
   "name": "celo-onramp-app",
   "version": "1.0.0",
-  "description": "Simple Celo onramp app with CDP SDK",
+  "description": "Celo Onramp App with automatic CELO to cCOP swap",
   "main": "index.js",
   "scripts": {
     "dev": "cd frontend && npm run dev",
     "build": "cd frontend && npm run build",
-    "install-frontend": "cd frontend && npm install",
+    "preview": "cd frontend && npm run preview",
     "install-backend": "cd backend && npm install",
-    "setup": "npm run install-frontend && npm run install-backend",
-    "backend": "cd backend && npm run dev",
-    "backend:start": "cd backend && npm start"
+    "backend": "cd backend && npm start",
+    "backend:start": "cd backend && node server.js",
+    "contracts:install": "npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @openzeppelin/contracts @uniswap/v3-core",
+    "contracts:compile": "npx hardhat compile",
+    "contracts:test": "npx hardhat test",
+    "contracts:deploy:alfajores": "npx hardhat run scripts/deploy-testnet-simple.js --network alfajores",
+    "contracts:deploy:celo": "npx hardhat run scripts/deploy.js --network celo",
+    "contracts:verify:alfajores": "npx hardhat verify --network alfajores",
+    "contracts:verify:celo": "npx hardhat verify --network celo"
   },
   "keywords": [
     "celo",
     "onramp",
-    "cdp",
-    "defi"
+    "defi",
+    "uniswap",
+    "ccop",
+    "stablecoin",
+    "colombia"
   ],
-  "author": "",
+  "author": "0xj4an",
   "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@uniswap/v3-core": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "hardhat": "^2.26.3"
+  },
   "dependencies": {
-    "@coinbase/cdp-sdk": "^1.35.0"
+    "ethers": "^6.0.0"
   }
 }

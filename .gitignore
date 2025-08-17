@@ -1,0 +1,110 @@
+# Dependencies / Dependencias
+node_modules/
+*/node_modules/
+**/node_modules/
+
+# Build outputs / Salidas de compilación
+dist/
+build/
+artifacts/
+cache/
+
+# Environment files / Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs / Registros
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data / Datos de tiempo de ejecución
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul / Directorio de cobertura usado por herramientas como istanbul
+coverage/
+*.lcov
+
+# nyc test coverage / Cobertura de pruebas nyc
+.nyc_output
+
+# Dependency directories / Directorios de dependencias
+jspm_packages/
+
+# Optional npm cache directory / Directorio de caché opcional de npm
+.npm
+
+# Optional eslint cache / Caché opcional de eslint
+.eslintcache
+
+# Optional REPL history / Historial opcional de REPL
+.node_repl_history
+
+# Output of 'npm pack' / Salida de 'npm pack'
+*.tgz
+
+# Yarn Integrity file / Archivo de integridad de Yarn
+.yarn-integrity
+
+# dotenv environment variables file / Archivo de variables de entorno dotenv
+.env
+
+# parcel-bundler cache (https://parceljs.org/) / Caché de parcel-bundler
+.cache
+.parcel-cache
+
+# next.js build output / Salida de compilación de next.js
+.next
+
+# nuxt.js build output / Salida de compilación de nuxt.js
+.nuxt
+
+# vuepress build output / Salida de compilación de vuepress
+.vuepress/dist
+
+# Serverless directories / Directorios serverless
+.serverless/
+
+# FuseBox cache / Caché de FuseBox
+.fusebox/
+
+# DynamoDB Local files / Archivos de DynamoDB Local
+.dynamodb/
+
+# TernJS port file / Archivo de puerto de TernJS
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions / Almacena versiones de VSCode usadas para probar extensiones de VSCode
+.vscode-test
+
+# Hardhat / Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# IDE / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS / Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files / Archivos temporales
+*.tmp
+*.temp
