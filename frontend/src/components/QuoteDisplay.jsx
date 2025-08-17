@@ -19,11 +19,6 @@ function QuoteDisplay({ quote, onProceed, onCancel }) {
           </div>
           
           <div className="quote-row">
-            <span>Monto en USD:</span>
-            <span className="amount usd-amount">{quote.monto_usd}</span>
-          </div>
-          
-          <div className="quote-row">
             <span>Celo que se compra:</span>
             <span className="celo-amount">{formatCELO(parseFloat(quote.celo_a_comprar))}</span>
           </div>
